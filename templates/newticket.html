@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>提交新工单 | Cloudsdale 工单系统</title>
+    <!-- 导入样式 -->
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+    <!-- 导入 Vue 3 -->
+    <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!--生产模式 <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>-->
+    <!-- 导入组件库 -->
+    <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+    <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+    <link rel="stylesheet" href="../static/css/newticket.5314b63a.css"/>
+</head>
+<body>
+    <div id="app">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            :ellipsis="false"
+            @select="handleSelect"
+          >
+            <el-menu-item index="0">CloudSdale 工单系统</el-menu-item>
+            <div class="flex-grow"></div>
+            <el-menu-item index="1"><el-link href="/">帮助中心主页</el-link></el-menu-item>
+            <el-menu-item index="2"><el-link href="/ticket/new">提交支持请求</el-link></el-menu-item>
+            <el-menu-item index="3"><el-link href="/ticket/list">工单列表</el-link></el-menu-item>
+            <el-menu-item index="4"><el-link href="https://jq.qq.com/?_wv=1027&k=bomOaTld">加入官方QQ群</el-link></el-menu-item>
+            <el-sub-menu index="5">
+              <template #title>{% if username %}{{username}}{% endif %}</template>
+                {% if username %}
+              <el-menu-item index="5-1"><el-link href="/user">用户中心</el-link></el-menu-item>
+              <el-menu-item index="5-2"><el-link href="/api/logout">退出</el-link></el-menu-item>
+                {% if isadmin %}<el-menu-item index="5-3"><el-link href="/admin">管理平台</el-link></el-menu-item>{% endif %}
+                {% endif %}
+            </el-sub-menu>
+        </el-menu>
+        <el-page-header content="提交新工单" onclick="javascript:window.location = '/ticket'"></el-page-header>
+        <el-alert class="alert" title="系统仍在测试，目前不支持上传图片，请使用图床或者公开网盘传图" type="warning" show-icon></el-alert>
+        <div style="padding: 10px;">
+          <div class="mdui-textfield mdui-textfield-floating-label">
+            <label class="mdui-textfield-label">工单标题</label>
+            <input class="mdui-textfield-input" type="text"/>
+          </div>
+            <div class="mdui-textfield mdui-textfield-floating-label">
+              <label class="mdui-textfield-label">工单内容</label>
+              <textarea class="mdui-textfield-input"></textarea>
+            </div>
+            <el-button type="primary" id="submit" :icon="Upload">提交工单</el-button>
+        </div>
+    </div>
+</body>
+<script src="//unpkg.com/element-plus"></script>
+<script type="text/typescript">
+const goBack = () => {
+  console.log('go back')
+  window.location = '/ticket/'
+}
+</script>
+<script>
+const input = Vue.ref('')
+const App = {
+  input
+};
+const app = Vue.createApp(App);
+app.use(ElementPlus);
+app.mount("#app");
+</script>
+<script>
+</script>
+<script type="text/typescript" setup>
+</script>
+<style>
+.flex-grow {
+  flex-grow: 1;
+}
+</style>
+<script src="../static/js/jquery-prod.js"></script>
+<script src="../static/js/newticket.5503dd4a.js"></script>
+</html>

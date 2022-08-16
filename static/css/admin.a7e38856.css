@@ -1,0 +1,42 @@
+*{
+    font-family: 'HarmonyOS Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    src: url(HarmonyOS_Sans_SC_Light.woff2),url(HarmonyOS_Sans_SC_Regular.woff2),url(HarmonyOS_Sans_SC_Medium.woff2)，url(HarmonyOS_Sans_SC_Bold.woff2)，url(HarmonyOS_Sans_SC_Black.woff2)
+}
+.box-card{
+    width: 300px;
+    margin: 5px 10px;
+    display: inline-block;
+}
+.title{
+    margin-left:10px;
+    font-weight:500
+}
+.el-tab-pane .mdui-table-fluid{
+    margin-top: 10px;
+    max-width: 99%;
+    margin-left:0
+}
+.mdui-table-fluid{
+    max-width:60%;
+    margin-left:10px
+}
+.alert{
+    margin-top: 10px;
+    max-width: 70%;
+    margin-left: 20px;
+    border-radius: 10px;
+}
+.el-tabs{
+    margin-left: 20px;
+    max-width: 80%;
+    margin-top: 20px;
+}
+.el-tabs__content{
+    height:400px;
+}
+.el-tabs__header{
+    height: 400px;
+}
+.mdui-textfield{
+    max-width: 20%;
+}

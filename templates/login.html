@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>登录 | Cloudsdale 帮助中心</title>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../static/css/login.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-deep-purple">
+    <div class="mdui-card base">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">欢迎登陆帮助中心</div>
+            <div class="mdui-card-primary-subtitle">使用你的<strong>帮助中心账户</strong>登录，没有可以去注册一个</div>
+        </div>
+        <div class="mdui-card-content">
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label">用户名</label><input class="mdui-textfield-input" type="text"/></div>
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock_outline</i><label class="mdui-textfield-label">密码</label><input type="password" class="mdui-textfield-input" type="text"/></div>
+                <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">beach_access</i><label class="mdui-textfield-label">验证码</label><input class="mdui-textfield-input" type="text"/></div><img src="/api/verify/captcha" alt="验证码"/>
+        </div>
+        <div class="mdui-card-actions">
+            <button class="mdui-btn mdui-ripple mdui-color-theme-accent" id="login">登录</button>
+            <a href="/user/reg" class="mdui-btn mdui-ripple">注册</a>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+<script src="../static/js/login.js"></script>
+<script src="../static/js/jquery-prod.js"></script>
+</html>

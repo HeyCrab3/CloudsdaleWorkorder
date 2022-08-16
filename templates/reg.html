@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>注册 | Cloudsdale 帮助中心</title>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../static/css/login.css"/>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-deep-purple">
+    <div class="mdui-card base">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">欢迎注册帮助中心</div>
+            <div class="mdui-card-primary-subtitle">注册之后你可以在这里提交工单，管理将会为你解答。</div>
+        </div>
+        <div class="mdui-card-content">
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label">用户名</label><input class="mdui-textfield-input" type="text"/></div>
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock_outline</i><label class="mdui-textfield-label">密码</label><input type="password" class="mdui-textfield-input" type="text"/></div>
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock_outline</i><label class="mdui-textfield-label">确认密码</label><input type="password" class="mdui-textfield-input" type="text"/></div>
+            <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">person_outline</i><label class="mdui-textfield-label">游戏ID</label><input class="mdui-textfield-input" type="text"/></div>
+            <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_box</i><label class="mdui-textfield-label">昵称</label><input class="mdui-textfield-input" /></div>
+              <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">beach_access</i><label class="mdui-textfield-label">验证码</label><input class="mdui-textfield-input" type="text"/></div><img src="/api/verify/captcha" alt="验证码"/>
+        </div>
+        <div class="mdui-card-actions">
+            <button class="mdui-btn mdui-ripple mdui-color-theme-accent" id="reg">注册</button>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+<script src="../static/js/reg.js"></script>
+<script src="../static/js/jquery-prod.js"></script>
+</html>
