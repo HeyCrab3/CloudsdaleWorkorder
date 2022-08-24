@@ -130,9 +130,12 @@ def NewTicketAPI():
         else:
             title = request.form.get('title')
             content = request.form.get('content')
+            images = request.form.get('images[]')
+            print(images)
             data = {'title': title, 'content': content, 'sender': base64.b64decode(user_token).decode('utf-8'),
                     'senderID': isExist['_id'], 'status': 0,
-                    'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")}
+                    'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+                    'images': images}
             db.workorder.insert_one(data)
             return jsonify({'code': 0, 'msg': '工单添加成功！正在重定向到首页..'})
 
@@ -214,7 +217,15 @@ def NewTicketReply():
             isThisGuy = db.workorder.find_one({'_id': ObjectId(ticketid)})
             isThisGuy = parse_json(isThisGuy)
             if isThisGuy['sender'] != base64.b64decode(user_token).decode('utf-8'):
-                return jsonify({'code': 403, 'msg': '这不是你的工单，无法回复。（管理员请使用后台回复）'})
+                isAdmin = db.user.find_one({'userName':base64.b64decode(user_token).decode('utf-8')})
+                if isAdmin['perm'] >= 5:
+                    data = {'replyTo': ticketid, 'content': content,
+                            'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': isAdmin['_id'],
+                            'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': True}
+                    db.reply.insert_one(data)
+                    return jsonify({'code': 0, 'msg': '回复发送成功 [管理员模式]'})
+                else:
+                    return jsonify({'code': 403, 'msg': '这不是你的工单，无法回复。（管理员请使用后台回复）'})
             else:
                 user = find(base64.b64decode(user_token).decode('utf-8'))
                 data = {'replyTo': ticketid, 'content': content, 'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': user['_id'], 'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': False}

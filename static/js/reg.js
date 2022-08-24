@@ -4,14 +4,16 @@ regbtn.onclick = function(){
     if (inputs[1].value != inputs[2].value){
         swal("错误","两次输入的密码不一致","error")
     }else{
-        var data = {"userName": inputs[0].value,"passWord": inputs[1].value,"gameID": inputs[3].value,"nickName": inputs[4].value,"captcha": inputs[5].value}
+        var data = {"userName": inputs[0].value,"passWord": inputs[1].value,"gameID": inputs[3].value,"nickName": inputs[4].value, "challenge": window.captchaData['challenge'], "validate": window.captchaData['validate'], "seccode": window.captchaData['seccode']}
         console.log('准备提交 -> ' + data)
         console.log(data)
         $.post("/api/user/reg",data,function(data){
             if (data['code'] == 0){
-                swal("注册成功",data['msg'],"success").then(() => {window.location = '/user/login'});
+                ElementPlus.ElMessage.success("注册成功，正在跳转登录页")
+                window.location = '/user/login'
             }else{
-                swal("错误",data['msg'],"error")
+                ElementPlus.ElMessage.error(data['msg'])
+                window.captchaObj.reset()
             }
         })
     }

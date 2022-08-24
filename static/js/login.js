@@ -1,14 +1,17 @@
-var loginbtn = document.getElementById('login')
-var inputs = document.getElementsByClassName('mdui-textfield-input')
-loginbtn.onclick = function(){
-    var data = {"userName": inputs[0].value,"passWord": inputs[1].value,"captcha":inputs[2].value}
+const login = document.getElementById('login')
+const inputs = document.getElementsByClassName('mdui-textfield-input')
+
+login.onclick = function(){
+    var data = {"userName": inputs[0].value, "passWord": inputs[1].value, "challenge": window.captchaData['challenge'], "validate": window.captchaData['validate'], "seccode": window.captchaData['seccode']}
     console.log('准备提交 -> ' + data)
     console.log(data)
     $.post("/api/user/login",data,function(data){
         if (data['code'] == 0){
-            swal("登陆成功",data['msg'],"success").then(() => {window.location = '/'});
+            ElementPlus.ElMessage.success(data['msg'])
+            window.location = '/'
         }else{
-            swal("错误",data['msg'],"error")
+            ElementPlus.ElMessage.error(data['msg'])
+            window.captchaObj.reset();
         }
     })
 }

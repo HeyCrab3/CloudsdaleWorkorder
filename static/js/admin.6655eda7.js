@@ -31,15 +31,7 @@ readdbbtn.onclick = function(){
             ElementPlus.ElMessage.error(data['msg'])
         }else{
             ElementPlus.ElMessage.success(data['msg'])
-            /**require.config({ paths: { 'vs': '../static/js/monaco' }});
-            require.config({'vs/nls': {availableLanguages: {'*':'zh-cn'}}});
-            require(['vs/editor/editor.main'],function(){     
-                monaco.editor.create(document.getElementById('monaco'), {
-                    value: data['result'], 
-                    language: 'javascript',
-                    theme:'vs'
-                });
-            });**/
+            ElementPlus.ElMessageBox.confirm(data['result'],'当前查询的数据库全部raw格式数据',{confirmButtonText: '立刻关闭',cancelButtonText: '或者关闭',draggable: true,})
         }
     })
 }
