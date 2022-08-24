@@ -7,14 +7,8 @@ from db import db
 import uuid
 import hashlib
 
-from aliyunsdkcore import client
-from aliyunsdkafs.request.v20180112 import AuthenticateSigRequest
-from aliyunsdkcore.profile import region_provider
-
 from geetest_config import GEETEST_ID, GEETEST_KEY
 from sdk.geetest_lib import GeetestLib
-
-region_provider.add_endpoint('afs', 'cn-hangzhou', 'afs.aliyuncs.com')
 
 
 bp = Blueprint('user', __name__)
@@ -110,26 +104,6 @@ def logOUT():
     session.clear()
     return "您已成功退出 <a href='/'>回到主页</a>"
 
-@bp.route('/api/captcha/auth',methods=['POST'])
-def CaptchaAuth():
-    clt = client.AcsClient('LTAI4G5k8DFL4KzPDRFHMED2', '0McPrZGCw36zz5t488VQjwAsxYTGei', 'cn-hangzhou')
-    requests = AuthenticateSigRequest.AuthenticateSigRequest()
-    requests.set_SessionId(request.form.get('session'))
-    requests.set_Sig(request.form.get('sig'))
-    requests.set_Token(request.form.get('token'))
-    requests.set_Scene(request.form.get('scene'))
-    requests.set_AppKey('FFFF0N1N00000000A816')
-    requests.set_RemoteIp('39.107.155.145')
-    try:
-        result = clt.do_action_with_exception(requests)
-        print(result)
-        result = json.loads(result)
-        if result['Code'] == 100:
-            return jsonify({'code':0,'msg':'验证码验签通过'})
-        else:
-            return jsonify({'code':401,'msg':'验签不通过，请重试'})
-    except:
-        return jsonify({'code': 500, 'msg': '系统内部错误'})
 @bp.route('/user')
 def user():
     user_token = session['user_token']
@@ -142,7 +116,6 @@ def user():
             return render_template('error.html', msg='会话无效'), 401
         else:
             return render_template('user.html', username=base64.b64decode(user_token).decode('utf-8'))
-
 
 @bp.route('/api/user/me')
 def me():
