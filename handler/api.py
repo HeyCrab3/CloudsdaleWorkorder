@@ -2,7 +2,7 @@ import base64
 import datetime
 import json
 
-from flask import Flask, render_template, jsonify, Bluepoint, Blueprint, redirect, request, session, Response
+from flask import Flask, render_template, jsonify, Blueprint, redirect, request, session, Response
 from db import db
 from bson import json_util, ObjectId
 import uuid

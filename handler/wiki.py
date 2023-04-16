@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, render_template, jsonify, Bluepoint, Blueprint, redirect, request, session
+from flask import Flask, render_template, jsonify, Blueprint, redirect, request, session
 from db import db
 import uuid
 

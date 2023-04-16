@@ -2,7 +2,7 @@ import base64
 import json
 
 from bson import json_util
-from flask import Flask, render_template, jsonify, Bluepoint, Blueprint, redirect, request, session
+from flask import Flask, render_template, jsonify, Blueprint, redirect, request, session
 from db import db
 import uuid
 import hashlib
@@ -43,11 +43,12 @@ def login():
     return render_template('login.html')
 @bp.route('/api/user/login',methods=['POST'])
 def sessionL():
-    userName = request.form.get('userName')
-    passWord = request.form.get('passWord')
-    challenge = request.form.get('challenge')
-    validate = request.form.get('validate')
-    seccode = request.form.get('seccode')
+    a = request.get_json()
+    userName = a.get('userName')
+    passWord = a.get('passWord')
+    challenge = a.get('challenge')
+    validate = a.get('validate')
+    seccode = a.get('seccode')
     gt_lib = GeetestLib(GEETEST_ID, GEETEST_KEY)
     result = gt_lib.successValidate(challenge, validate, seccode)
     if result.status == 1:
@@ -69,13 +70,14 @@ def regInterface():
     return render_template('reg.html')
 @bp.route('/api/user/reg',methods=['POST'])
 def regApi():
-    userName = request.form.get('userName')
-    passWord = request.form.get('passWord')
-    gameID = request.form.get('gameID')
-    nickName = request.form.get('nickName')
-    challenge = request.form.get('challenge')
-    validate = request.form.get('validate')
-    seccode = request.form.get('seccode')
+    a = request.get_json()
+    userName = a.get('userName')
+    passWord = a.get('passWord')
+    gameID = a.get('gameID')
+    nickName = a.get('nickName')
+    challenge = a.get('challenge')
+    validate = a.get('validate')
+    seccode = a.get('seccode')
     gt_lib = GeetestLib(GEETEST_ID, GEETEST_KEY)
     result = gt_lib.successValidate(challenge, validate, seccode)
     if result.status == 1:
@@ -143,7 +145,8 @@ def UserChangePwd():
         if isExist is None:
             return jsonify({'code': 403, 'msg': '无效会话'}), 401
         else:
-            newPwd = request.form.get('newPwd')
+            a = request.get_json()
+            newPwd = a.get('newPwd')
             db.user.update_one({'userName': base64.b64decode(user_token).decode('utf-8')}, {'$set': {'passWord': hashlib.sha256(newPwd.encode('utf-8')).hexdigest()}})
             return jsonify({'code': 0, 'msg': '密码修改成功'})
 
@@ -160,6 +163,7 @@ def UserChangeNick():
         if isExist is None:
             return jsonify({'code': 403, 'msg': '无效会话'}), 401
         else:
-            newNick = request.form.get('newNick')
+            a = request.get_json()
+            newNick = a.get('newNick')
             db.user.update_one({'userName': base64.b64decode(user_token).decode('utf-8')}, {'$set': {'nickName': newNick}})
             return jsonify({'code': 0, 'msg': '昵称修改成功'})

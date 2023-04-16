@@ -6,7 +6,7 @@ port = 27017
 database = 'workorder'
 # 请注意，启动程序之前必须配置ip,port和database，否则连接不上数据库会报错
 
-client = pymongo.MongoClient(ip, port)
+client = pymongo.MongoClient("mongodb+srv://HeyCrab3:gangcheng114514>>.@holyshit.cdcxwyp.mongodb.net/?retryWrites=true&w=majority")
 db = None
 
 

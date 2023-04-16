@@ -2,7 +2,7 @@ import base64
 import datetime
 import json
 
-from flask import Flask, render_template, jsonify, Bluepoint, Blueprint, redirect, request, session
+from flask import Flask, render_template, jsonify, Blueprint, redirect, request, session
 from db import db
 from bson import json_util, ObjectId
 import uuid
@@ -51,6 +51,57 @@ def TicketOverview():
         else:
             return render_template('overview.html', username=base64.b64decode(user_token).decode('utf-8'))
 
+# New Code STart
+
+@bp.route('/api/ticket/metadata')
+def TicketMetadata():
+    # 鉴权
+    user_token = session['user_token']
+    if user_token is None:
+        session.clear()
+        return jsonify({'code': 403, 'msg': '无效会话'})
+    else:
+        isExist = find(base64.b64decode(user_token).decode('utf-8'))
+        if isExist is None:
+            return jsonify({'code': 403, 'msg': '无效会话'})
+        else:
+            # 检查用户权限
+            if isExist['perm'] <= 5:
+                return jsonify({'code': 403, 'msg': '权限不够'})
+            else:
+                ticket_id = request.args.get('ticket_id')
+                result = parse_json(db.workorder.find_one({'_id': ObjectId(ticket_id)}))
+                return jsonify({'code': 0, 'msg': '操作成功', 'data': result})
+
+@bp.route('/api/ticket/delete', methods=['POST'])
+def DeleteTicket():
+    user_token = session['user_token']
+    if user_token is None:
+        session.clear()
+        return jsonify({'code': 403, 'msg': '无效会话'})
+    else:
+        isExist = find(base64.b64decode(user_token).decode('utf-8'))
+        if isExist is None:
+            return jsonify({'code': 403, 'msg': '无效会话'})
+        else:
+            a = request.get_json()
+            ticketid = a.get('ticket_id')
+            if isExist['perm'] < 5:
+                isThisGuy = db.workorder.find_one({'_id': ObjectId(ticketid)})
+                isThisGuy = parse_json(isThisGuy)
+                if isThisGuy['sender'] != base64.b64decode(user_token).decode('utf-8'):
+                    return jsonify({'code': 403, 'msg': '不能删除不属于你的工单'})
+                else:
+                    try:
+                        db.workorder.delete_one({'_id': ObjectId(ticketid)})
+                        return jsonify({'code': 0, 'msg': '删除成功。'})
+                    except:
+                        return jsonify({'code': 500, 'msg': '发生错误！'})
+            else:
+                db.workorder.delete_one({'_id': ObjectId(ticketid)})
+                return jsonify({'code': 0, 'msg': '删除成功。'})
+
+# New Code End
 
 @bp.route('/api/ticket/overall')
 def TicketAPIStatus():
@@ -128,9 +179,10 @@ def NewTicketAPI():
         if isExist is None:
             return jsonify({'code': 403, 'msg': '无效会话'})
         else:
-            title = request.form.get('title')
-            content = request.form.get('content')
-            images = request.form.get('images[]')
+            a = request.get_json()
+            title = a.get('title')
+            content = a.get('content')
+            images = a.get('images[]')
             print(images)
             data = {'title': title, 'content': content, 'sender': base64.b64decode(user_token).decode('utf-8'),
                     'senderID': isExist['_id'], 'status': 0,
@@ -212,22 +264,31 @@ def NewTicketReply():
         if isExist is None:
             return jsonify({'code': 403, 'msg': '无效会话'})
         else:
+            a = request.get_json()
             ticketid = request.args.get('id')
-            content = request.form.get('content')
+            content = a.get('content')
             isThisGuy = db.workorder.find_one({'_id': ObjectId(ticketid)})
             isThisGuy = parse_json(isThisGuy)
             if isThisGuy['sender'] != base64.b64decode(user_token).decode('utf-8'):
                 isAdmin = db.user.find_one({'userName':base64.b64decode(user_token).decode('utf-8')})
                 if isAdmin['perm'] >= 5:
-                    data = {'replyTo': ticketid, 'content': content,
-                            'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': isAdmin['_id'],
-                            'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': True}
-                    db.reply.insert_one(data)
-                    return jsonify({'code': 0, 'msg': '回复发送成功 [管理员模式]'})
+                    if isThisGuy['status'] == -1:
+                        return jsonify({'code': 400, 'msg': '工单已关闭，禁止操作'})
+                    else:
+                        data = {'replyTo': ticketid, 'content': content,
+                                'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': user['_id'],
+                                'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': True}
+                        db.reply.insert_one(data)
+                        return jsonify({'code': 0, 'msg': '回复发送成功'})
                 else:
-                    return jsonify({'code': 403, 'msg': '这不是你的工单，无法回复。（管理员请使用后台回复）'})
+                    return jsonify({'code': 403, 'msg': '这不是你的工单，无法回复。'})
             else:
                 user = find(base64.b64decode(user_token).decode('utf-8'))
-                data = {'replyTo': ticketid, 'content': content, 'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': user['_id'], 'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': False}
-                db.reply.insert_one(data)
-                return jsonify({'code':0, 'msg': '回复发送成功'})
+                if isThisGuy['status'] == -1:
+                    return jsonify({'code': 400, 'msg': '工单已关闭，禁止操作'})
+                else:
+                    data = {'replyTo': ticketid, 'content': content,
+                            'sender': base64.b64decode(user_token).decode('utf-8'), 'senderID': user['_id'],
+                            'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), 'isAdmin': False}
+                    db.reply.insert_one(data)
+                    return jsonify({'code': 0, 'msg': '回复发送成功'})

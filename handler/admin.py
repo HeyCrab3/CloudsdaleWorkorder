@@ -2,7 +2,7 @@ import base64
 import datetime
 import json
 
-from flask import Flask, render_template, jsonify, Bluepoint, Blueprint, redirect, request, session
+from flask import Flask, render_template, jsonify, Blueprint, redirect, request, session
 from db import db
 from bson import json_util, ObjectId
 import uuid
@@ -21,6 +21,22 @@ def find(username):
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+# New Code Start
+
+@bp.route('/api/admin/getPermission')
+def GetPermission():
+    user_token = session['user_token']
+    if user_token is None:
+        return jsonify({'code': 401, 'msg': '未登录'})
+    else:
+        result = find(base64.b64decode(user_token).decode('utf-8'))
+        if result['perm'] < 5:
+            return jsonify({'code': 401, 'msg': '权限不够'})
+        else:
+            return jsonify({'code': 0})
+# New Code End
+
+
 @bp.route('/admin')
 def AdminPage():
     user_token = session['user_token']
@@ -28,7 +44,7 @@ def AdminPage():
         return redirect('/')
     else:
         result = find(base64.b64decode(user_token).decode('utf-8'))
-        if result['perm'] < 10:
+        if result['perm'] < 5:
             return redirect('/')
         else:
             return render_template('admin.html', username=base64.b64decode(user_token).decode('utf-8'))
@@ -40,7 +56,7 @@ def AdminUserData():
         return jsonify({'code': 401, 'msg': '无效会话'}), 401
     else:
         result = find(base64.b64decode(user_token).decode('utf-8'))
-        if result['perm'] < 10:
+        if result['perm'] < 5:
             return jsonify({'code': 403, 'msg': '无权访问'}),403
         else:
             result = db.user.find()
@@ -107,11 +123,34 @@ def AdminTicketReply():
         if result['perm'] < 10:
             return jsonify({'code': 403, 'msg': '无权访问'}), 403
         else:
-            ticketid = request.form.get('ticketID')
-            content = request.form.get('reply')
+            a = request.get_json()
+            ticketid = request.args.get('id')
+            content = a.get('content')
             user = find(base64.b64decode(user_token).decode('utf-8'))
             data = {'replyTo': ticketid, 'content': content, 'sender': base64.b64decode(user_token).decode('utf-8'),
                     'senderID': user['_id'], 'time': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                     'isAdmin': True}
             db.reply.insert_one(data)
             return jsonify({'code':0, 'msg': '回复发送成功'})
+
+# New Code Start
+
+@bp.route('/api/admin/ticket/update', methods=['POST'])
+def AdminUpdateStatus():
+    user_token = session['user_token']
+    if user_token is None:
+        return jsonify({'code': 401, 'msg': '无效会话'}), 401
+    else:
+        result = find(base64.b64decode(user_token).decode('utf-8'))
+        if result['perm'] < 10:
+            return jsonify({'code': 403, 'msg': '无权访问'}), 403
+        else:
+            a = request.get_json()
+            ticket_id = a.get('ticket_id')
+            status = a.get('status')
+            try:
+                db.workorder.update_one({'_id': ObjectId(ticket_id)}, {'$set': {'status': status}})
+                return jsonify({'code': 0, 'msg': '成功'})
+            except:
+                return jsonify({'code': 500, 'msg': '内部服务器错误'})
+# New Code End
