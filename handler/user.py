@@ -164,6 +164,7 @@ def UserChangeNick():
             return jsonify({'code': 403, 'msg': '无效会话'}), 401
         else:
             a = request.get_json()
-            newNick = a.get('newNick')
+            print(a)
+            newNick = a.get('nick')
             db.user.update_one({'userName': base64.b64decode(user_token).decode('utf-8')}, {'$set': {'nickName': newNick}})
             return jsonify({'code': 0, 'msg': '昵称修改成功'})

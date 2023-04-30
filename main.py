@@ -16,12 +16,6 @@ from sdk.geetest_lib import GeetestLib
 app = Flask(__name__)
 
 
-# 别动。极验验证码相关模块
-# 建立redis连接池
-
-# 发送bypass请求，获取bypass状态并进行缓存（如何缓存可根据自身情况合理选择,这里是使用redis进行缓存）
-
-
 app.debug = True
 app.config['SECRET_KEY'] = b'45r3aug435qy95t3hu9pg4tyui4teabyiuybuegrbergrgiuhpergauh'
 
